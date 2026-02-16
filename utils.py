@@ -8,6 +8,11 @@ import sounddevice as sd
 import scipy.signal as sci
 import numpy as np
 
+def save(filename, fs, data):
+    if not filename.endswith(".wav"):
+        filename += ".wav"
+    save_data = (data * 32767).astype(np.int16)
+    wavfile.write(filename, fs, save_data)
 
 def record_with_cache(filename, duration, fs=44100):
     if os.path.exists(filename):
@@ -22,6 +27,8 @@ def record_with_cache(filename, duration, fs=44100):
     else:
         print(f"--- No cache found. Starting NEW recording for {duration}s... ---")
         print("Press any key to continue")
+        input()
+        print("Starting")
         recording = sd.rec(int(duration * fs), samplerate=fs, channels=1, dtype='float32')
         sd.wait()
         data = recording.flatten()
